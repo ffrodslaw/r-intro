@@ -1,0 +1,27 @@
+\R code, just like any other code, is a form of language. While there is no official ``right'' way to write \R code, you should pay attention to the way you are writing it. A major reason for that is that your code is likely to be read by others such as coauthors or people you may ask for help troubleshooting it. Following some common style rules can make understanding each other's code much easier. It will also help yourself read your own code or troubleshoot it.
+
+A lot of style recommendations for \R code are based on Google's \href{https://google.github.io/styleguide/Rguide.xml}{style guide}. It's a useful starting point and a good resource. However, any kind of rules you adopt must work for you and are always subjective. In the following, I list some of the most widely accepted guidelines that I also agree with.
+
+\subsection{Naming conventions}
+
+For naming objects, there is the trade-off between being descriptive and being concise. Names should be meaningful in order to tell the reader what it contains but not long enough to get tedious and unnecessary. For example \texttt{sleep\_students} might be preferred to \texttt{hours\_students\_sleep\_at\_night}.
+
+Besides the actual names, people have different conventions of capitalization and expressing spaces. For example,
+
+{\parindent40pt % disables indentation for all the text between { and }
+	{\small \texttt{maximization\_function}}
+	
+	{\small \texttt{maximization.function}}
+	
+	{\small \texttt{MaximizationFunction}}
+	
+	{\small \texttt{maximizationfunction}}
+}
+
+Choose one of the conventions and stick to it. Some people choose different ones for different types of objects. Avoid names that are reserved by \R commands and other important words that \R uses such as \texttt{T}, \texttt{F}, \texttt{else}, etc. 
+
+\subsection{File organization}
+
+\subsection{Syntax}
+
+\subsection{Additional conventions}

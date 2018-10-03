@@ -1,0 +1,681 @@
+\subsubsection*{Advantages}
+
+Why do we care?
+\begin{itemize}
+\item It's open source and free
+\item It's available for all major platforms (Win, Mac, Linux)
+\item Easy to find support online
+\item Frequent updates
+\item Very flexible 
+
+\end{itemize}
+
+\subsubsection*{Not so great}
+
+\begin{itemize}
+\item No graphical user interface (like Stata or SPSS)
+\item You don't ``see'' what you're doing to the data (like Excel)
+\item Can be difficult to learn
+\item No warranty whatsoever
+\end{itemize}
+
+\subsection{Installing R}
+
+Go to\ \ {\small \url{https://cran.r-project.org/}} and choose your operating system under ``Download and Install R''.
+
+\subsubsection*{Windows}
+
+Choose ``base" to get to the base distribution and then download the latest version. 
+
+\subsubsection*{Mac}
+
+Installing \R on your Mac should be pretty similar. Choose the version that matches your Mac. For example, if you run Mac OS X 10.11 or higher, download the ``R-3.5.1.pkg" package.
+
+\subsubsection*{Linux}
+
+Find your distribution and follow the instructions. This is a little less straightforward than with Windows and Mac but if you run into any trouble email me.
+
+
+\subsubsection*{Installing an editor}
+
+Once you have \R installed, you have full access to its functions. \R comes installed with a terminal that you use to send commands. While it works just fine, it is not the easiest to learn.
+
+We will use an editor for ease of use and organization. \R Studio is an excellent alternative to the console as it provides a nice system to edit your files while you're working on them and keeps everything better organized.
+
+To download \R Studio, visit\ \  {\small \url{https://www.rstudio.com/products/rstudio/download/#download}} and find the installer that matches your system.
+
+\subsubsection*{How does it work?}
+
+\R is a compiled language which means that it executes your code immediately (no need to build an entire program).
+
+When you start \textsf{R}, you see information about the version, software licence etc. and the \emph{prompt}:
+
+\begin{lstlisting}
+>
+\end{lstlisting}
+
+This tells you that \R is waiting for you. Your typed command appears next to the prompt and can be executed by hitting \texttt{Enter}.
+
+\subsection{\R as a calculator}
+
+\begin{lstlisting}
+> 1 + 2
+[1] 3
+\end{lstlisting}
+
+By executing this command, \textsf{R} creates an \textit{object} and prints the content of the object. The \texttt{[1]} denotes that the object only has one value.
+
+It can happen that you see a different prompt, a \texttt{+} instead of a \texttt{>}. This means that \textsf{R} is waiting for more input and the current command is not complete.
+
+\begin{lstlisting}
+> 1 +
++ 2
+[1] 3
+\end{lstlisting} 
+
+A frequent problem are brackets, you might have opened one but didn't close it. \R doesn't know what to do and waits for further input. Give \R what it wants.
+
+\begin{lstlisting}
+> 7 / (1 + 3
++ )
+[1] 1.75
+\end{lstlisting}
+
+(Note: this is not the same as \texttt{7 / 1 + 3} .)
+
+\vspace*{0.5cm}
+
+\newpage
+\subsubsection*{Operators}
+
+\textsf{R} understands these basic operators
+
+\begin{itemize}
+\item $+$ and $-$ for addition and subtraction
+\item $*$ and $/$ for multiplication and division
+\item $\wedge$ for exponents
+\end{itemize}
+
+Standard functions are also available:
+
+\begin{lstlisting}
+> log(10)     #base= e
+[1] 2.302585
+
+> log(10, base=10)
+[1] 1
+
+> exp(1)
+[1] 2.718282
+
+> sin(0)
+[1] 0
+
+> acos(-1)
+[1] 3.141593
+\end{lstlisting}
+
+\textsf{R} can't do the impossible:
+
+\begin{lstlisting}
+> log(0)
+[1] -Inf
+
+> log(-1)
+Warning in log(-1): NaNs produced
+[1] NaN
+\end{lstlisting}
+
+Where \texttt{-Inf} means $-\infty$ and \texttt{NaN} means ``Not a Number''. Getting those is a sign that you need to stop and reevaluate what you're doing.
+
+\subsubsection*{Comments and Spacing}
+
+It is great to annotate your code. This will remind you or everyone else who reads your code of what you did. The command for that is \texttt{\#}; \texttt{R} ignores everything printed after it (until the line ends).
+
+\begin{lstlisting}
+> 1 + 2  # always annotate
+[1] 3
+\end{lstlisting}
+
+\textsf{R} does not care about how many spaces you put in your commands.
+
+\subsection{Vectors and objects}
+
+Basically everything in \R is an object. \R creates and manipulates objects. Having information stored as objects allows you to call it later on. Examples of objects are integers, vectors, matrices, lists and data frames. In \R an assignment can take many forms, and all of the following are the same.
+
+\begin{lstlisting}
+> x <- exp(1)
+> x = exp(1)
+> exp(1) -> x
+> assign('x', exp(1))
+\end{lstlisting}
+
+When you want to assign an object, you give it a name. Descriptive names can be useful when you have to handle many objects. Use \texttt{<-} or \texttt{=} to assign an object (most \R users prefer the former). Any name that does not start with a number is fine. Note that \texttt{R} is case-sensitive.
+
+Once a value is assigned to the variable we can use \texttt{x} like any other number.
+
+\begin{lstlisting}
+> x
+[1] 2.718282
+
+> x-2
+[1] 0.7182818
+
+> log(x)
+[1] 1
+\end{lstlisting}
+
+Notice that none of the above actually change the value of x. If we want to assign a new value to \texttt{x} we just use the arrow again.
+
+\begin{lstlisting}
+> x
+[1] 2.718282
+
+> x <- exp(2)
+
+> x
+[1] 7.389056
+\end{lstlisting}
+
+
+%\newpage
+%\subsection*{R Code}
+ % % % % % % % % % % % % THIS IS WHERE I ACTUALLY DO THE LISTINGS % % % % % % % % % % % %
+%\lstinputlisting{01.R}
+
+\subsubsection*{Vectors}
+ 
+Notice that all of our output began with the symbol \texttt{[1]}, for example
+
+\begin{lstlisting}
+> 2+2
+
+[1] 4
+\end{lstlisting}
+
+The just means that R thinks of this as a vector(a set of numbers) and the \texttt{[1]} tells you that the value next to it is the first number in the vector. There's no reason why an variable in \R has to have only one value. The simplest way to create vector is with the \texttt{c()} function.
+
+\begin{lstlisting}
+> x <- c(1, 4, 6, 1)
+
+> x
+[1] 1 4 6 1
+\end{lstlisting}
+
+The \texttt{[1]} is still there to tell us that the number next to it is the first value in the vector. The \texttt{c} in this function stands for ``concatenate'' and it can be used to bring lots of vectors together.
+
+\begin{lstlisting}
+> y <- c(2, 3, 2, 1)
+> c(y, y, y, x, x, x, y, y, x, x)
+
+[1] 2 3 2 1 2 3 2 1 2 3 2 1 1 4 6 1 1 4 6 1 1 4 6 1 2 3 2 1 2 3 2 1 1 4 6
+[36] 1 1 4 6 1
+\end{lstlisting}
+
+Whenever the output goes onto a second line we get a new indicator to tell us what position it is. So in the code above we have \texttt{[1]} at the beginning of the output and then \texttt{[36]} which tells us that the value that starts the second line is the 36th value in the vector.
+
+\vspace*{0.5cm}
+
+Nearly all the functions we looked at before work on vectors.
+
+\begin{lstlisting}
+> x+y
+[1] 3 7 8 2
+
+> x/y
+[1] 0.500000 1.333333 3.000000 1.000000
+
+> log(x)
+[1] 0.000000 1.386294 1.791759 0.000000
+\end{lstlisting}
+
+We can also sort the values within a vector.
+
+\begin{lstlisting}
+> sort(x)
+[1] 1 1 4 6
+
+> sort(x, decreasing=TRUE)
+[1] 6 4 1 1
+
+> length(x)
+[1] 4
+\end{lstlisting}
+
+\subsubsection*{Easier ways to create vectors}
+
+If we are creating a vector that follows a pattern, we do not have manually type out every element of it. For consecutive integers, we can use a colon.
+
+\begin{lstlisting}
+> 1:15
+ [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15
+ 
+> 5:2
+[1] 5 4 3 2
+\end{lstlisting}
+
+The more general version of the colon is the \verb|seq()| command.
+
+\begin{lstlisting}
+> seq(0,20)
+ [1]  0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+ 
+> seq(0, 20, by = 2)
+ [1]  0  2  4  6  8 10 12 14 16 18 20
+ 
+> seq(0, 20, length.out = 5)
+[1]  0  5 10 15 20
+\end{lstlisting}
+
+The \verb|rep()| command allows you to repeat numbers.
+
+\begin{lstlisting}
+> rep(10, 2)
+[1] 10 10
+
+> rep(x,3)
+ [1] 1 4 6 1 1 4 6 1 1 4 6 1
+ 
+> rep(x, each = 3)  # repeats each number within x one at a time
+ [1] 1 1 1 4 4 4 6 6 6 1 1 1
+\end{lstlisting}
+
+Note here that a vector can also include non-numerical elements. For example,
+
+\begin{lstlisting}
+> animals <- c("cat", "beaver", "raccoon")
+\end{lstlisting}
+
+\subsubsection*{Indexing}
+
+We use indexing when we want to extract or replace a single value within a vector. For this we use square brackets.
+
+\begin{lstlisting}
+> z <- seq(0, 6, by = 2)
+> z[3]
+[1] 4
+
+> z[1:3]  # first three values
+[1] 0 2 4
+
+> z[c(1,3)]  # values 1 and 3, note that we need c()
+[1] 0 4
+
+> z[-c(1,3)]  # everything but values 1 and 3
+[1] 2 6
+\end{lstlisting}
+
+We can also extract using logical operators. Assume we only want elements of \verb|z| that are greater than 4. 
+
+\begin{lstlisting}
+> z>4
+[1] FALSE FALSE FALSE  TRUE
+\end{lstlisting}
+
+The command returns a vector of \texttt{TRUE} and \texttt{FALSE} values to show whether a certain element in \texttt{z} fulfills the condition. In order to get the elements that meet the conditions, we can subset the vector again.
+
+\begin{lstlisting}
+> z[z>4]
+[1] 6
+\end{lstlisting}
+
+Commonly used logical operators are \verb|<| (less than), \verb|<=| (less than or equal to), \verb|>| (greater than), \verb|>=| (greater than or equal to), \verb|==| (equal), \verb|!=| (not equal), and \verb|!| (not). Logical operators can be strung together using \verb|&| (and) and \texttt{|} (or).
+
+\begin{lstlisting}
+> z > 3 & z < 5
+[1] FALSE FALSE  TRUE FALSE
+
+> z[z > 3 & z < 5]
+[1] 4
+
+> z[z > 3 | z < 5]
+[1] 0 2 4 6
+\end{lstlisting}
+
+\subsubsection*{Removing objects}
+
+We use the \verb|ls()| command to view all the objects that we have defined. 
+
+\begin{lstlisting}
+> ls()
+[1] "animals" "x" "y" "z"
+\end{lstlisting}
+
+If we want to remove one of them, we can use the \verb|rm()| command. It cannot be undone, so be careful with it.
+
+\begin{lstlisting}
+> rm(list='z')
+> ls()
+[1] "animals" "x" "y"
+\end{lstlisting}
+
+We can also delete one than one object at a time by using the \verb|c()| command, for example \verb|rm(list = c('x', 'y'))|. The command \verb|rm(list=ls())| deletes everything.
+
+\subsection{Matrices}
+
+Matrices are two-dimensional versions of vectors. To create a matrix in \R, you just need to create a vector and tell \R the dimensions.
+
+\begin{lstlisting}
+> matrix(x, nrow = 2)
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    3    5    7    9
+[2,]    2    4    6    8   10
+
+> matrix(x, ncol = 2)
+     [,1] [,2]
+[1,]    1    6
+[2,]    2    7
+[3,]    3    8
+[4,]    4    9
+[5,]    5   10
+\end{lstlisting}
+
+\R fills in the numbers column by column, but we can force it to do it by row:
+
+\begin{lstlisting}
+> matrix(x, ncol = 2, byrow = TRUE)
+     [,1] [,2]
+[1,]    1    2
+[2,]    3    4
+[3,]    5    6
+[4,]    7    8
+[5,]    9   10
+\end{lstlisting}
+
+We can also use \verb|cbind| and \verb|rbind| to ``bind'' vectors together to make a matrix, bind a vector to a matrix, or bind matrices together.
+
+\begin{lstlisting}
+> cbind(x, y)
+       x   y
+ [1,]  1 -10
+ [2,]  2  -9
+ [3,]  3  -8
+ [4,]  4  -7
+ [5,]  5  -6
+ [6,]  6  -5
+ [7,]  7  -4
+ [8,]  8  -3
+ [9,]  9  -2
+[10,] 10  -1
+
+> rbind(x, y)
+  [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+x    1    2    3    4    5    6    7    8    9    10
+y  -10   -9   -8   -7   -6   -5   -4   -3   -2    -1
+\end{lstlisting}
+
+Another useful command for matrices is \verb|diag()|. It has a few different uses.
+
+\begin{lstlisting}
+> diag(3)  # 3 x 3 identity matrix
+     [,1] [,2] [,3]
+[1,]    1    0    0
+[2,]    0    1    0
+[3,]    0    0    1
+
+> diag(x)  # square matrix with diagonal = x, off-diagonal = 0
+      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+ [1,]    1    0    0    0    0    0    0    0    0     0
+ [2,]    0    2    0    0    0    0    0    0    0     0
+ [3,]    0    0    3    0    0    0    0    0    0     0
+ [4,]    0    0    0    4    0    0    0    0    0     0
+ [5,]    0    0    0    0    5    0    0    0    0     0
+ [6,]    0    0    0    0    0    6    0    0    0     0
+ [7,]    0    0    0    0    0    0    7    0    0     0
+ [8,]    0    0    0    0    0    0    0    8    0     0
+ [9,]    0    0    0    0    0    0    0    0    9     0
+[10,]    0    0    0    0    0    0    0    0    0    10
+
+> Z <- matrix(1:9, nrow = 3)
+> Z
+     [,1] [,2] [,3]
+[1,]    1    4    7
+[2,]    2    5    8
+[3,]    3    6    9
+
+> diag(Z)  # extract the diagonal of a square matrix
+[1] 1 5 9
+\end{lstlisting}
+
+You can also turn a matrix back into a vector.
+
+\begin{lstlisting}
+> c(Z)
+[1] 1 2 3 4 5 6 7 8 9
+
+> as.vector(Z)
+[1] 1 2 3 4 5 6 7 8 9
+\end{lstlisting}
+
+Any time you want to check what kind of object something is, you can check its class.
+
+\begin{lstlisting}
+> class(x)
+[1] "integer"
+
+> class(Z)
+[1] "matrix"
+\end{lstlisting}
+
+\subsubsection*{Matrix attributes}
+
+Just like with vectors we can use square brackets  to extract or replace elements. For a matrix \texttt{X}, the command \verb|X[i, j]| gives you the element from row \texttt{i}, column \texttt{j}.
+
+\begin{lstlisting}
+> X <- matrix(1:12, nrow = 3)
+> X
+     [,1] [,2] [,3] [,4]
+[1,]    1    4    7   10
+[2,]    2    5    8   11
+[3,]    3    6    9   12
+> X[2,4]
+[1] 11
+
+> X[3,2] <- 8
+> X
+     [,1] [,2] [,3] [,4]
+[1,]    1    4    7   10
+[2,]    2    5    8   11
+[3,]    3    8    9   12
+
+> X[1,]  # extracts the whole first row
+[1]  1  4  7 10
+
+> X[, 2]  # extracts the second column
+[1] 4 5 8
+
+> X[1:2,]  # first two rows
+     [,1] [,2] [,3] [,4]
+[1,]    1    4    7   10
+[2,]    2    5    8   11
+\end{lstlisting}
+
+As before, we can use logical operators.
+
+\begin{lstlisting}
+> X[ ,2] == 8  # which rows have 8 in the second column?
+[1] FALSE FALSE  TRUE
+
+> X[X[ ,2] == 8, ]  # pulls out the corresponding elements
+[1]  3  8  9 12
+\end{lstlisting}
+
+For most things, \R treats matrices as vectors that are written differently and we can do operations with it such as asking for their length, mean, standard deviation, etc.
+
+\begin{lstlisting}
+> length(X)
+[1] 12
+
+> mean(X)
+[1] 6.666667
+
+> sd(X)
+[1] 3.626502
+\end{lstlisting}
+
+Commands that only work with matrices include:
+
+\begin{lstlisting}
+> dim(X)
+[1] 3 4
+
+> nrow(X)
+[1] 3
+
+> ncol(X)
+[1] 4
+\end{lstlisting}
+
+Another thing that can be done with matrices but not with vectors is naming the rows and columns. Both of the names are just string vectors and can be set with, e.g. \verb|colnames(X) <- c("left", "right")| and \verb|rownames(X) <- c("up", "down")|.
+
+\subsubsection*{Matrix operations}
+
+Matrix math in \R includes standard operations including arithmetic.
+
+\begin{lstlisting}
+> X <- matrix(1:4, nrow = 2)
+> Y <- diag(2)
+
+> X + Y
+     [,1] [,2]
+[1,]    2    3
+[2,]    2    5
+
+> X-Y
+     [,1] [,2]
+[1,]    0    3
+[2,]    2    3
+
+> X * Y  # element-wise multiplication
+     [,1] [,2]
+[1,]    1    0
+[2,]    0    4
+
+> X %*% Y  # matrix multiplication
+     [,1] [,2]
+[1,]    1    3
+[2,]    2    4
+\end{lstlisting}
+
+If you use matrix multiplication on a vector \R will guess whether it is a row or column vector. It might guess wrong occasionally, so be careful. We can also transpose and invert matrices.
+
+\begin{lstlisting}
+> X
+     [,1] [,2]
+[1,]    1    3
+[2,]    2    4
+
+> t(X)  # transpose
+     [,1] [,2]
+[1,]    1    2
+[2,]    3    4
+
+> solve(X)  # invert
+     [,1] [,2]
+[1,]   -2  1.5
+[2,]    1 -0.5
+\end{lstlisting}
+
+Other handy function include the determinant of the Cholesky decomposition.
+
+\begin{lstlisting}
+> Y <- matrix(c(1, 0.5, 0.5, 1), nrow = 2)
+
+> det(Y)
+[1] 0.75
+
+> chol(Y)  # Choleski decomposition
+     [,1]      [,2]
+[1,]    1 0.5000000
+[2,]    0 0.8660254
+
+> t(chol(Y)) %*% chol(Y) 
+     [,1] [,2]
+[1,]  1.0  0.5
+[2,]  0.5  1.0
+\end{lstlisting}
+
+Other things that will be useful are the trace as well as eigenvalues and eigenvectors of matrices.
+
+\begin{lstlisting}
+> sum(diag(Y))  # there is no command for the trace
+[1] 2
+
+> eigen(Y)
+eigen() decomposition
+$values
+[1] 1.5 0.5
+
+$vectors
+          [,1]       [,2]
+[1,] 0.7071068 -0.7071068
+[2,] 0.7071068  0.7071068
+\end{lstlisting}
+
+\subsection{Lists}
+
+When \R returns a list to us, we can extract the elements of it using the dollar sign. The names are given by the output. In the \texttt{eigen()} example above the names are given as ``values'' and ``vectors''.
+
+\begin{lstlisting}
+> eigen(Y)$values
+[1] 1.5 0.5
+
+> eigen(Y)$vectors
+          [,1]       [,2]
+[1,] 0.7071068 -0.7071068
+[2,] 0.7071068  0.7071068
+\end{lstlisting}
+
+Alternatively, we can still use brackets but we need to double them up when we are dealing with lists.
+
+\begin{lstlisting}
+> eigen(Y)[[2]]
+          [,1]       [,2]
+[1,] 0.7071068 -0.7071068
+[2,] 0.7071068  0.7071068
+
+> class(eigen(Y)[[2]])
+[1] "matrix"
+\end{lstlisting}
+
+\subsection{Packages and updating}
+
+Packages expand the functionality of \R. They are free and can be downloaded from CRAN (and to a much smaller extent from other sources). You can directly install them in the console. 
+
+\begin{lstlisting}
+> install.packages("MASS")
+\end{lstlisting}
+
+It may ask you to pick a mirror. Choose whichever you want. After the package it installed, you can load it.
+
+\begin{lstlisting}
+> library(MASS)
+\end{lstlisting}
+
+\subsubsection*{Updating \R and \R packages}
+
+To update \R, you need to 1) download the new version, 2) install it, and 3) uninstall the old version. If there is a major upgrade, you may need to copy files from your library folder to the new once before uninstalling the old version. This save you from reinstalling all of your packages.
+
+To update an \R package, simply run \verb|install.packages()| again or use RStudio's function for it in the ``Tools'' menu.
+
+\subsection{Getting help}
+
+You will likely run into a lot of problem. This is normal and happens even to the most senior \R users. One way to solve it is to look up the \R help file of the particular function that you are curious about.
+
+\begin{lstlisting}
+> ?log
+> help(log)
+\end{lstlisting}
+
+Both commands do the same. The help file consists of multiple sections such as what the function is supposed to do, what arguments it takes, more details, and an example of its use. If you know what you want to do, but don't know what function to use, you can search for that as well:
+
+\begin{lstlisting}
+> ??"multivariate normal"
+> help.search("multivariate normal")
+\end{lstlisting}
+
+If neither solves your problem, Google will nearly always find you the right answer, especially answers from \href{htpp://www.stackoverflow.com}{Stack Overflow}.
+
+
+
+

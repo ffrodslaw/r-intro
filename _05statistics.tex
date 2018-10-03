@@ -1,0 +1,362 @@
+\subsection{Ordinary least squares}
+
+We're going to use the same dataset by Fearon and Laitin again.
+
+\begin{lstlisting}
+library(foreign)
+fl <- read.dta("fearonlaitin2003.dta")  # change to path on your computer
+\end{lstlisting}
+
+OLS in \R is done with the \texttt{lm} command. It takes formulas in the following form: \verb|Y ~ X1 + X2...|, where \texttt{Y} is the dependent variable and the \texttt{X}s are the independent variables. The tilde is used to separate them. We can also include \texttt{-1} if we want to drop the constant term. Check out \texttt{help(lm)} to see additional options and arguments.
+
+\begin{lstlisting}
+> # basic OLS
+> model1 <- lm(onset ~ ethfrac
++              , data = fl)
+
+# run only on former British colonies (variable: colbrit)
+> model2 <- lm(onset ~ ethfrac
++              , data = fl
++              , subset = colbrit == 1)
+\end{lstlisting}
+
+We can make most adjustments to the formula with \texttt{I()} such as squared variables. We can also include interaction term or transform variables.
+
+\begin{lstlisting}
+# includes population and population squared
+> model3 <- lm(onset ~ ethfrac + pop + I(pop^2)
++              , data = fl)
+
+# interaction between ethnic fractionalization and population
+> model4 <- lm(onset ~ ethfrac * pop
++              , data = fl)
+\end{lstlisting}
+
+\subsection{Extracting model information}
+
+The value of \texttt{lm()} is a fitted model object; technically it is a list of results of class \texttt{"lm"}. Information can be extracted using different functions such as \texttt{summary}, \texttt{family}, \texttt{predict}, \texttt{residuals}, \texttt{coef}, and others. \texttt{summary()} is the most common command since it give you a very comprehensive summary of the results of regression analysis. Let's have a look at our last regression model, \texttt{model4}.
+
+\begin{lstlisting}
+> summary(model4)
+
+Call:
+lm(formula = onset ~ ethfrac * pop, data = fl)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.1068 -0.0215 -0.0156 -0.0113  3.9667 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)   
+(Intercept) 8.459e-03  3.017e-03   2.804  0.00507 **
+ethfrac     1.835e-02  6.361e-03   2.884  0.00393 **
+pop         4.628e-08  2.479e-08   1.867  0.06192 . 
+ethfrac:pop 4.235e-08  4.813e-08   0.880  0.37894   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.138 on 6429 degrees of freedom
+  (177 observations deleted due to missingness)
+Multiple R-squared:  0.004104,	Adjusted R-squared:  0.003639 
+F-statistic:  8.83 on 3 and 6429 DF,  p-value: 7.719e-06
+\end{lstlisting}
+
+We can also pull out information individually:
+
+\begin{lstlisting}
+> model4$coefficients
+ (Intercept)      ethfrac          pop  ethfrac:pop 
+8.459111e-03 1.834898e-02 4.628410e-08 4.234679e-08 
+
+> head(model4$residuals) # residuals
+          1           2           3           4           5           6 
+-0.02366425 -0.02372362 -0.02377133 -0.02393177 -0.02409515 -0.02435831
+ 
+> head(model4$fitted.values)  # predicted values
+         1          2          3          4          5          6 
+0.02366425 0.02372362 0.02377133 0.02393177 0.02409515 0.02435831 
+
+> head(model4$model)  # data used to fit model
+  onset   ethfrac    pop
+1     0 0.3569501 140969
+2     0 0.3569501 141936
+3     0 0.3569501 142713
+4     0 0.3569501 145326
+5     0 0.3569501 147987
+6     0 0.3569501 152273
+
+> model4$call  # command used to create object
+lm(formula = onset ~ ethfrac * pop, data = fl)
+
+> vcov(model4)  # returns variance matrix of model
+              (Intercept)       ethfrac           pop   ethfrac:pop
+(Intercept)  9.104143e-06 -1.539275e-05 -2.088196e-11  3.474674e-11
+ethfrac     -1.539275e-05  4.046649e-05  3.351982e-11 -9.699062e-11
+pop         -2.088196e-11  3.351982e-11  6.144572e-16 -8.775865e-16
+ethfrac:pop  3.474674e-11 -9.699062e-11 -8.775865e-16  2.316167e-15
+\end{lstlisting}
+
+\subsubsection*{Hypothesis testing}
+
+The package \texttt{car} provides us with the useful command \texttt{linearHypothesis}.
+
+\begin{lstlisting}
+> # same as the basic t-test
+> linearHypothesis(model4, c("ethfrac = 0"))
+Linear hypothesis test
+
+Hypothesis:
+ethfrac = 0
+
+Model 1: restricted model
+Model 2: onset ~ ethfrac * pop
+
+  Res.Df    RSS Df Sum of Sq      F   Pr(>F)   
+1   6430 122.67                                
+2   6429 122.51  1   0.15855 8.3201 0.003934 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+> # special test
+> linearHypothesis(model4, c("ethfrac = 0.4"))
+Linear hypothesis test
+
+Hypothesis:
+ethfrac = 0.4
+
+Model 1: restricted model
+Model 2: onset ~ ethfrac * pop
+
+  Res.Df    RSS Df Sum of Sq      F    Pr(>F)    
+1   6430 191.10                                  
+2   6429 122.51  1    68.591 3599.5 < 2.2e-16 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+> # test if they have the same coefficient
+> linearHypothesis(model4, c("ethfrac = ethfrac:pop"))
+Linear hypothesis test
+
+Hypothesis:
+ethfrac - ethfrac:pop = 0
+
+Model 1: restricted model
+Model 2: onset ~ ethfrac * pop
+
+  Res.Df    RSS Df Sum of Sq    F   Pr(>F)   
+1   6430 122.67                              
+2   6429 122.51  1   0.15854 8.32 0.003934 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+\end{lstlisting}
+
+\subsubsection*{Fixed effects and clustered errors}
+
+One options to include fixed effects is by including dummy variables.
+
+\begin{lstlisting}
+> FE.model1 <- lm(onset ~ ethfrac + factor(ccode)
++                 , data = fl)
+\end{lstlisting}
+
+By introducing a dummy variable for every country in the dataset, you create a huge output. It's easier on the eyes to use the \texttt{plm} package instead. It suppresses the fixed effects in its output.
+
+\begin{lstlisting}
+> library(plm)
+Loading required package: Formula
+> FE.model2 <- plm(onset ~ ethfrac
++                  , model = "within"  # FE command
++                  , index = c("ccode", "year")  # panel variables
++                  , data = fl)
+
+> summary(FE.model2)
+Oneway (individual) effect Within Model
+
+Call:
+plm(formula = onset ~ ethfrac, data = fl, model = "within", index = c("ccode", 
+    "year"))
+
+Unbalanced Panel: n = 161, T = 7-55, N = 6610
+
+Residuals:
+    Min.  1st Qu.   Median  3rd Qu.     Max. 
+-0.21272 -0.02500  0.00000  0.00000  3.91118 
+
+Coefficients:
+        Estimate Std. Error t-value  Pr(>|t|)    
+ethfrac -0.37153    0.10575 -3.5133 0.0004456 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Total Sum of Squares:    119.69
+Residual Sum of Squares: 119.47
+R-Squared:      0.0019106
+Adj. R-Squared: -0.023011
+F-statistic: 12.3433 on 1 and 6448 DF, p-value: 0.00044562
+\end{lstlisting}
+
+You can get a random effects model by changing the \texttt{model} argument to \texttt{model = "random"}. You can also use \texttt{plm}'s built-in clustering functions.
+
+\begin{lstlisting}
+> # same as lm with clustering
+> pool1 <- plm(onset ~ ethfrac
++                  , model = "pooling" 
++                  , index = c("ccode", "year") 
++                  , data = fl)
+
+> # panel corrected standard errors
+> pcse <- vcovBK(pool1, cluster = "time")
+> coeftest(pool1, pcse)
+
+t test of coefficients:
+
+             Estimate Std. Error t value  Pr(>|t|)    
+(Intercept) 0.0094397  0.0023773  3.9707 7.241e-05 ***
+ethfrac     0.0202591  0.0064428  3.1445  0.001671 ** 
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+\end{lstlisting}
+
+We can do the same for fixed effects models.
+
+\begin{lstlisting}
+> # fixed effects model, standard errors clustered on country
+> clust <- vcovBK(FE.model2, cluster = "group")  # can be either "group" or "time" or both
+> coeftest(FE.model2, clust)
+
+t test of coefficients:
+
+         Estimate Std. Error t value  Pr(>|t|)    
+ethfrac -0.371531   0.076281 -4.8706 1.139e-06 ***
+---
+Signif. codes:  
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+\end{lstlisting}
+
+\subsection{Output into tables}
+
+You might want to include the output of your regression models into a paper. We will cover two packages that let you export tables into \LaTeX (or HTML).
+
+\subsubsection*{\texttt{xtable}}
+
+\begin{lstlisting}
+> library(xtable)
+> xtable(model1)
+% latex table generated in R 3.5.0 by xtable 1.8-2 package
+% Wed Sep 26 17:11:06 2018
+\begin{table}[ht]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & Estimate & Std. Error & t value & Pr($>$$|$t$|$) \\ 
+  \hline
+(Intercept) & 0.0094 & 0.0028 & 3.34 & 0.0009 \\ 
+  ethfrac & 0.0203 & 0.0059 & 3.43 & 0.0006 \\ 
+   \hline
+\end{tabular}
+\end{table}
+\end{lstlisting}
+
+In \LaTeX, this looks like this:
+
+% latex table generated in R 3.5.0 by xtable 1.8-2 package
+% Wed Sep 26 17:11:06 2018
+\begin{table}[h]
+\centering
+\begin{tabular}{rrrrr}
+  \hline
+ & Estimate & Std. Error & t value & Pr($>|t|$) \\ 
+  \hline
+(Intercept) & 0.0094 & 0.0028 & 3.34 & 0.0009 \\ 
+  ethfrac & 0.0203 & 0.0059 & 3.43 & 0.0006 \\ 
+   \hline
+\end{tabular}
+\end{table}
+
+\subsubsection*{\texttt{stargazer}}
+
+This package is useful when we want to display models side by side. Unlike \texttt{xtable} it works on nearly every canned model directly.
+
+\begin{lstlisting}
+> library(stargazer)
+
+> stargazer(model2, model3, FE.model2
++           , title = "Trying out Stargazer"
++           , label = "tab:stargazer"
++           , covariate.labels = c("Ethnic Frac."
++                                 , "Population"
++                                 , "Ethnic Frac. * Population")
++           , dep.var.labels = "Onset"
++           , digits = 2
++           , style = "AJPS")  # choose a journal to emulate
+
+% Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
+% Date and time: Thu, Sep 27, 2018 - 04:59:11 PM
+\begin{table}[!htbp] \centering 
+  \caption{Trying out Stargazer} 
+  \label{tab:stargazer} 
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
+\\[-1.8ex]\hline \\[-1.8ex] 
+\\[-1.8ex] & \multicolumn{3}{c}{\textbf{Onset}} \\ 
+\\[-1.8ex] & \multicolumn{2}{c}{\textbf{OLS}} & \textbf{panel} \\ 
+ & \multicolumn{2}{c}{\textbf{}} & \textbf{linear} \\ 
+\\[-1.8ex] & \textbf{Model 1} & \textbf{Model 2} & \textbf{Model 3}\\ 
+\hline \\[-1.8ex] 
+ Ethnic Frac. & 0.01 & 0.02$^{***}$ & $-$0.37$^{***}$ \\ 
+  & (0.01) & (0.01) & (0.11) \\ 
+  Population &  & 0.0000$^{***}$ &  \\ 
+  &  & (0.0000) &  \\ 
+  Ethnic Frac. * Population &  & $-$0.00$^{**}$ &  \\ 
+  &  & (0.00) &  \\ 
+  Constant & 0.01$^{**}$ & 0.01$^{**}$ &  \\ 
+  & (0.01) & (0.003) &  \\ 
+ N & 1896 & 6433 & 6610 \\ 
+R-squared & 0.0002 & 0.005 & 0.002 \\ 
+Adj. R-squared & $-$0.0003 & 0.004 & $-$0.02 \\ 
+Residual Std. Error & 0.13 (df = 1894) & 0.14 (df = 6429) &  \\ 
+F Statistic & 0.34 (df = 1; 1894) & 10.16$^{***}$ (df = 3; 6429) & 12.34$^{***}$ (df = 1; 6448) \\ 
+\hline \\[-1.8ex] 
+\multicolumn{4}{l}{$^{***}$p $<$ .01; $^{**}$p $<$ .05; $^{*}$p $<$ .1} \\ 
+\end{tabular} 
+\end{table} 
+\end{lstlisting}
+
+Using the \texttt{out} option, you can also directly save this to a \texttt{.tex} file. The table looks as follows:
+
+% Table created by stargazer v.5.2.2 by Marek Hlavac, Harvard University. E-mail: hlavac at fas.harvard.edu
+% Date and time: Thu, Sep 27, 2018 - 04:59:11 PM
+\begin{table}[!h] \centering 
+  \caption{Trying out Stargazer} 
+  \label{tab:stargazer} 
+\begin{tabular}{@{\extracolsep{5pt}}lccc} 
+\\[-1.8ex]\hline \\[-1.8ex] 
+\\[-1.8ex] & \multicolumn{3}{c}{\textbf{Onset}} \\ 
+\\[-1.8ex] & \multicolumn{2}{c}{\textbf{OLS}} & \textbf{panel} \\ 
+ & \multicolumn{2}{c}{\textbf{}} & \textbf{linear} \\ 
+\\[-1.8ex] & \textbf{Model 1} & \textbf{Model 2} & \textbf{Model 3}\\ 
+\hline \\[-1.8ex] 
+ Ethnic Frac. & 0.01 & 0.02$^{***}$ & $-$0.37$^{***}$ \\ 
+  & (0.01) & (0.01) & (0.11) \\ 
+  Population &  & 0.0000$^{***}$ &  \\ 
+  &  & (0.0000) &  \\ 
+  Ethnic Frac. * Population &  & $-$0.00$^{**}$ &  \\ 
+  &  & (0.00) &  \\ 
+  Constant & 0.01$^{**}$ & 0.01$^{**}$ &  \\ 
+  & (0.01) & (0.003) &  \\ 
+ N & 1896 & 6433 & 6610 \\ 
+R-squared & 0.0002 & 0.005 & 0.002 \\ 
+Adj. R-squared & $-$0.0003 & 0.004 & $-$0.02 \\ 
+Residual Std. Error & 0.13 (df = 1894) & 0.14 (df = 6429) &  \\ 
+F Statistic & 0.34 (df = 1; 1894) & 10.16$^{***}$ (df = 3; 6429) & 12.34$^{***}$ (df = 1; 6448) \\ 
+\hline \\[-1.8ex] 
+\multicolumn{4}{l}{$^{***}$p $<$ .01; $^{**}$p $<$ .05; $^{*}$p $<$ .1} \\ 
+\end{tabular} 
+\end{table} 
+
+\begin{lstlisting}
+
+\end{lstlisting}
+
+\subsection{Plotting results} 

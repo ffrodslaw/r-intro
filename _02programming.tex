@@ -1,0 +1,155 @@
+\subsection{Control statements}
+
+\subsubsection*{Conditional}
+
+For logical conditions we can use \texttt{if} and \texttt{else} as separate commands.
+
+\begin{lstlisting}
+> if (logical){
+  command1
+  command2
+}else{
+  command3
+}
+\end{lstlisting}
+
+A trivial example of an if else statement is
+
+\begin{lstlisting}
+> y <- FALSE
+> if(y){
++   cat("Hello World")
++ }else{
++   cat("Goodbye")
++ }
+
+Goodbye
+\end{lstlisting}
+
+There also is a vectorized version of the \texttt{if/else} construct, the \texttt{ifelse} function.
+
+\begin{lstlisting}
+ifelse(condition, a, b)
+\end{lstlisting}
+
+It returns \texttt{a} if the condition is fulfilled and \texttt{b} if not.
+
+\subsubsection*{Repetitive}
+
+A loop repeatedly goes over the same code for a list of different objects. The most basic form in \R is the \texttt{for} loop.
+
+\begin{lstlisting}
+> y <- 1:10
+> for(i in 1:10){
++   y[i] <- y[i]^2
++ }
+> y
+ [1]   1   4   9  16  25  36  49  64  81 100
+\end{lstlisting}
+
+The \texttt{break} command is useful when you are repeating a process but do not care about how many times it is done, just that it is. For example, you want something to converge.
+
+\begin{lstlisting}
+> repeat{
++   y <- runif(1)
++   if(y < 0.05){
++     break
++   }
++ }
+> y
+[1] 0.02829025
+\end{lstlisting}
+
+Alternatively (and easier), you can use the \texttt{while} structure which basically functions like a \texttt{for} loop with a built-in stop command.
+
+\begin{lstlisting}
+> y <- 1
+> while(y > 0.05){
++   y <- runif(1)
++ }
+> y
+[1] 0.02105261
+\end{lstlisting}
+
+\subsection{*ply functions}
+
+The ply family is a set of functions with the goal of making code faster and more readable. They can often be used to avoid writing out lengthy loops. The most basic one of them, \texttt{apply}, is used on vectors.
+
+\begin{lstlisting}
+> X <- replicate(3, rnorm(10))
+> apply(X, 2, sd)  # standard deviation of every column
+[1] 0.9302021 1.3075942 0.9424055
+\end{lstlisting}
+
+The options \texttt{2} refers to column while \texttt{1} refers to rows.
+
+\begin{lstlisting}
+> apply(X, 1, max) 
+ [1]  0.6140781  0.5996994  0.8903101  0.5666874  1.2870948
+ [6]  2.1704159 -0.7683647 -0.3774086  0.5831079  1.0580204
+\end{lstlisting}
+
+When you're dealing with lists you can use \texttt{lapply}.
+
+\begin{lstlisting}
+> X <- list(A = diag(1:4),
++           B = matrix(1:4, nrow = 2))
+> lapply(X, solve)
+$A
+     [,1] [,2]      [,3] [,4]
+[1,]    1  0.0 0.0000000 0.00
+[2,]    0  0.5 0.0000000 0.00
+[3,]    0  0.0 0.3333333 0.00
+[4,]    0  0.0 0.0000000 0.25
+
+$B
+     [,1] [,2]
+[1,]   -2  1.5
+[2,]    1 -0.5
+\end{lstlisting}
+
+If you want to do an operations on a list that returns a vector instead, you can use \texttt{sapply}.
+
+\begin{lstlisting}
+> X <- list(A = diag(1:4),
++           B = matrix(1:4, nrow = 2))
+> sapply(X, max)
+A B 
+4 4 
+\end{lstlisting}
+
+\subsection{Write your own function} 
+
+One of the great things about \R is that it allows you to write your own functions in a relatively simple and elegant way. Customizing \R by writing your own function will make your experience with it much easier and more comfortable. Most canned commands are written in \R itself. For example, check out the source code of the \texttt{rowMeans} command by typing the command without any parentheses into the console.
+
+A function is defined in the form
+
+\begin{lstlisting}
+> name <- function(arg_1, arg_1, ...) expression
+\end{lstlisting}
+
+For example, you could write your own function that calculates the sum of squares.
+
+\begin{lstlisting}
+> sum_of_squares <- function(x, y) {
++   x^2 + y^2
++ }
+
+< sum_of_squares(2,5)
+29
+\end{lstlisting}
+
+\subsubsection*{Named arguments and defaults}
+
+If argument to called functions are given in the ``\texttt{name = object}'' form, they can be given in any order. In the example above, the call \verb|sum_of_squares(y = 5, x = 2)| will yield the same result.
+
+When writing your own function, you can specify default values of arguments. This means that they are not necessary to be included in the call. In the same example above, if we set \texttt{y}'s default to 10, we would not need to specify it every time.
+
+\begin{lstlisting}
+> sum_of_squares <- function(x, y = 10) {
++   x^2 + y^2
++ }
+
+< sum_of_squares(2)
+104
+\end{lstlisting}

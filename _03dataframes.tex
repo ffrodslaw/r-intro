@@ -1,0 +1,274 @@
+Data frames are just another type of object in \R. They are used to store and manipulate data because they offer some advantages over matrices such as 
+\begin{itemize}
+	\item Each column in a data frame can be of a different class (numeric, character, factor). All the columns in a matrix must be the same class (numeric, character).
+	\item Data frames can be merged together; the \texttt{merge} command does not work on matrices.
+	\item Most regression commands are designed to work with data frames and not matrices.
+	\item It's easier to extract individual variables.
+\end{itemize}
+
+\subsection{Reading in data}
+
+\R has the ability to read many different kinds of data. The two standard commands for tab- and comma-separated data are \texttt{read.table} and \texttt{read.csv} respectively. It's recommended to save Excel files as a comma separated file (.csv) and then load it into \R instead of trying to directly load Excel files. If you only have data in the Stata format (.dta), you can use the \texttt{foreign} package. It also reads in files from SAS, SPSS, S+, and others. To practice loading Stata files, download \href{https://web.stanford.edu/group/ethnic/publicdata/publicdata.html}{the replication data} set for Fearon and Laitin's 2003 article on civil war.
+
+\begin{lstlisting}
+> library(foreign)
+> setwd("~/Dropbox")  # change this to the directory where your dataset is saved
+
+> # Note that I use relative paths within my working directory
+
+> fl <- read.dta("fearonlaitin2003.dta")
+> class(fl)
+
+[1] "data.frame"
+\end{lstlisting}
+
+\subsection{Extracting and manipulating data}
+
+\subsubsection*{Looking at all variables}
+
+If you want to look at your data, we can use the \texttt{View} command. This command opens up a new windows where we can see the data just like we would using the \texttt{browse} command in Stata. There also is the \texttt{fix} command that allows us to edit values just like in Stata.
+
+\begin{lstlisting}
+> View(fl)
+> fix(fl)
+\end{lstlisting}
+
+Data sets can be huge and looking at all of it might be impractical. The \texttt{head()} command allows us to only look at the first 6 observations of a data set. Equivalently, the \texttt{tail()} command let's us look at the last 6 observations.
+
+\begin{lstlisting}
+> head(fl)
+\end{lstlisting}
+
+The command \texttt{summary} can be used to get a summary of every column in the data frame.
+
+\begin{lstlisting}
+> summary(fl[, 1:10])  # summary statistics for first 10 columns
+     ccode         country             cname               cmark              year     
+ Min.   :  2.0   Length:6610        Length:6610        Min.   :0.00000   Min.   :1945  
+ 1st Qu.:230.0   Class :character   Class :character   1st Qu.:0.00000   1st Qu.:1964  
+ Median :451.0   Mode  :character   Mode  :character   Median :0.00000   Median :1977  
+ Mean   :450.6                                         Mean   :0.02436   Mean   :1976  
+ 3rd Qu.:663.0                                         3rd Qu.:0.00000   3rd Qu.:1989  
+ Max.   :950.0                                         Max.   :1.00000   Max.   :1999  
+      wars             war              warl            onset            ethonset     
+ Min.   :0.0000   Min.   :0.0000   Min.   :0.0000   Min.   :0.00000   Min.   :0.0000  
+ 1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.00000   1st Qu.:0.0000  
+ Median :0.0000   Median :0.0000   Median :0.0000   Median :0.00000   Median :0.0000  
+ Mean   :0.1552   Mean   :0.1389   Mean   :0.1346   Mean   :0.01725   Mean   :0.0118  
+ 3rd Qu.:0.0000   3rd Qu.:0.0000   3rd Qu.:0.0000   3rd Qu.:0.00000   3rd Qu.:0.0000  
+ Max.   :4.0000   Max.   :1.0000   Max.   :1.0000   Max.   :4.00000   Max.   :4.0000 
+\end{lstlisting}
+
+\texttt{colnames()} or \texttt{names()} can be used to look at all column names in the data frame.
+
+\begin{lstlisting}
+> names(fl)
+ [1] "ccode"      "country"    "cname"      "cmark"      "year"       "wars"      
+ [7] "war"        "warl"       "onset"      "ethonset"   "durest"     "aim"       
+[13] "casename"   "ended"      "ethwar"     "waryrs"     "pop"        "lpop"      
+[19] "polity2"    "gdpen"      "gdptype"    "gdpenl"     "lgdpenl1"   "lpopl1"    
+[25] "region"     "western"    "eeurop"     "lamerica"   "ssafrica"   "asia"      
+[31] "nafrme"     "colbrit"    "colfra"     "mtnest"     "lmtnest"    "elevdiff"  
+[37] "Oil"        "ncontig"    "ethfrac"    "ef"         "plural"     "second"    
+[43] "numlang"    "relfrac"    "plurrel"    "minrelpc"   "muslim"     "nwstate"   
+[49] "polity2l"   "instab"     "anocl"      "deml"       "empethfrac" "empwarl"   
+[55] "emponset"   "empgdpenl"  "emplpopl"   "emplmtnest" "empncontig" "empolity2l"
+[61] "sdwars"     "sdonset"    "colwars"    "colonset"   "cowwars"    "cowonset"  
+[67] "cowwarl"    "sdwarl"     "colwarl"  
+\end{lstlisting}
+
+\subsubsection*{Individual variables}
+
+\R treats data frames like a special version of a list. Similarly to before with lists, we can use the dollar sign to refer to individual elements, i.e. variables in a data frame.
+
+\begin{lstlisting}
+> summary(fl$pop)  # summary statistics for population variable
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+    222    3217    8137   31787   20601 1238599     177 
+\end{lstlisting}
+
+Alternatively, we can also use an index. For example, \verb|summary(fl[, 18])| will yield the same output. Extracted variables are just vectors and we can treat them as such.
+
+\begin{lstlisting}
+> fl$pop[1:10]
+ [1] 140969 141936 142713 145326 147987 152273 155000 157727 160475 163202
+\end{lstlisting}
+
+\subsubsection*{Subsetting}
+
+There are many different ways to subset, both by variables and by observation. Assume we wanted to create a subset with only COW codes and years in it. The following commands all do the same thing.
+
+\begin{lstlisting}
+> temp <- fl[, c("ccode", "year")]
+> temp <- fl[, c(1, 5)]
+> temp <- cbind.data.frame(fl$ccode, fl$year)
+> temp <- with(fl, cbind.data.frame(ccode, year))
+> temp <- subset(fl, select = c("ccode", "year"))
+
+> head(temp)
+  ccode year
+1     2 1945
+2     2 1946
+3     2 1947
+4     2 1948
+5     2 1949
+6     2 1950
+\end{lstlisting}
+
+Now let's assume we only wanted to extract observations from the US.
+
+\begin{lstlisting}
+> temp <- fl[fl$ccode == 2, ]
+
+> temp <- subset(fl, ccode == 2)
+> head(temp[, 1:10])  # show only first 10 variables
+  ccode country cname cmark year wars war warl onset ethonset
+1     2     USA   USA     1 1945    0   0    0     0        0
+2     2     USA   USA     0 1946    0   0    0     0        0
+3     2     USA   USA     0 1947    0   0    0     0        0
+4     2     USA   USA     0 1948    0   0    0     0        0
+5     2     USA   USA     0 1949    0   0    0     0        0
+6     2     USA   USA     0 1950    0   0    0     0        0
+\end{lstlisting}
+
+We can combine subsetting by variables and observations.
+
+\begin{lstlisting}
+> temp <- subset(fl, ccode == 2, select = c("year", "polity2"))
+> head(temp)
+  year polity2
+1 1945      10
+2 1946      10
+3 1947      10
+4 1948      10
+5 1949      10
+6 1950      10
+\end{lstlisting}
+
+\subsubsection*{Factors}
+
+Factors are a type of class that \R uses for categorical variables. An example is the \texttt{region} variables in Fearon and Laitin's data.
+
+\begin{lstlisting}
+> summary(fl$region)
+        western democracies and japan 
+                                 1155 
+e. europe and the former soviet union 
+                                  646 
+                                 asia 
+                                 1096 
+        n. africa and the middle east 
+                                  910 
+                   sub-saharan africa 
+                                 1593 
+      latin america and the caribbean 
+                                 1210 
+                                 
+> head(fl$region) 
+[1] western democracies and japan western democracies and japan
+[3] western democracies and japan western democracies and japan
+[5] western democracies and japan western democracies and japan
+6 Levels: western democracies and japan ...
+
+> levels(fl$region)  # just the levels
+[1] "western democracies and japan"        
+[2] "e. europe and the former soviet union"
+[3] "asia"                                 
+[4] "n. africa and the middle east"        
+[5] "sub-saharan africa"                   
+[6] "latin america and the caribbean"      
+ 
+> nlevels(fl$region)  # number of levels
+[1] 6                                 
+\end{lstlisting}
+
+You may want to convert factors to characters before manipulating them. Useful functions for converting objects are \texttt{as.numeric}, \texttt{as.character}, \texttt{as.Date}, \texttt{as.factor}, \texttt{as.matrix}, and \texttt{as.data.frame}.
+
+\subsection{Merging}
+
+We use the \texttt{merge} command to join two data frames together based on specific columns.
+
+\begin{lstlisting}
+> df1 <- data.frame(ccode = 1:5,
++                   var1 = rnorm(5))
+
+> df2 <- data.frame(ccode = 1:5,
++                   var2 = runif(5))
+
+> df3 <- merge(df1,
++              df2,
++              by = "ccode")
+> df3
+  ccode        var1       var2
+1     1  0.01272682 0.85499172
+2     2  1.09159960 0.79616244
+3     3  0.58217858 0.34005053
+4     4 -0.56010580 0.40052045
+5     5 -0.84454966 0.03681286
+\end{lstlisting}
+
+If the variable names that we want to merge on differ in the two data frames, we can specify \texttt{by.x} and \texttt{by.y} separately. If the two data frames differ in the scope of groups to merge on (countries in our example), \texttt{merge} will only recover observations from overlapping countries. If we would only want countries from the first data frame, we can specify \verb|all.x = TRUE| (or \verb|all.y = TRUE| for the second data frame). We can also merge on more than one variable by using a vector of variables in the \texttt{by} argument.
+
+\subsection{Reshaping}
+
+Sometimes you might want to reshape data, especially from wide to long. For example, Freedom House data is only available in a wide format. We will use the \texttt{melt} command from the \texttt{reshape2} package.
+
+\begin{lstlisting}
+library(reshape2)
+
+# generate some fake data in the wide format
+fakedata <- read.table(header = TRUE, text="
+  country X1979 X1980 X1981
+  1       F     F     NF
+  2       NF    NF    NF")
+  
+colnames(  > colnames(fakedata)
+[1] "country" "X1979"   "X1980"   "X1981" 
+\end{lstlisting}
+
+We want to reshape it into a country-year format.
+
+\begin{lstlisting}
+> long <- melt(fakedata,
++              id.vars = c("country"),
++              variable.name = "year",
++              value.name = "press"
++              )
+
+> long$year <- as.numeric(substring(long$year, 2))  # get rid of X in front of year and save as number
+> head(long)
+  country year press
+1       1 1979     F
+2       2 1979    NF
+3       1 1980     F
+4       2 1980    NF
+5       1 1981    NF
+6       2 1981    NF
+\end{lstlisting}
+
+\subsection{New variables}
+
+New variables can be added to data frames by saving them to their new variable name directly in the data frame.
+
+\begin{lstlisting}
+> fl$lgdp <- log(fl$gdpen)  # logged GDP per capita
+\end{lstlisting}
+
+It is just as easy to delete variable.
+
+\begin{lstlisting}
+> fl$lgdp <- NULL
+\end{lstlisting}
+
+\subsection{Saving data}
+
+All the read function have equivalents that write data.
+
+\begin{lstlisting}
+> write.csv(fl, "fl.csv")
+> write.dta(fl, "fl.dta")
+
+> save(fl, "fl.Rdata")  # save as .Rdata data set
+\end{lstlisting}
+
+You can save multiple objects to a \texttt{.Rdata} file. \texttt{save.image} saves your entire workspace.

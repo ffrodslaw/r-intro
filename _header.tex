@@ -1,0 +1,125 @@
+\documentclass[12pt, letter]{article}
+
+\usepackage[margin=1in, ignorefoot]{geometry} 
+\usepackage[english]{babel}
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{ucs}
+\usepackage{tabularx}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{subscript}
+\usepackage{setspace}
+\usepackage{ccicons}
+\usepackage{txfonts}
+\usepackage{fontawesome}
+\usepackage{hologo}
+
+\usepackage{natbib}
+\bibpunct{(}{)}{;}{a}{}{,}
+\bibliographystyle{apsr}
+\usepackage[nottoc,notlot,notlof,numbib]{tocbibind}
+\def\fns{\footnotesize}
+
+\setlength\parindent{0pt}
+
+\definecolor{cerulean}{rgb}{0.0, 0.48, 0.65}
+\definecolor{pansypurple}{rgb}{0.47, 0.09, 0.29}
+
+\DeclareMathOperator{\var}{var}
+
+\usepackage[bookmarks, colorlinks, breaklinks]{hyperref}  
+\hypersetup{
+	linkcolor=black,
+	citecolor=cerulean,
+	filecolor=black,
+	urlcolor=pansypurple,
+	pdftitle={Brief Introduction to R}, 
+    pdfauthor={Anna Walsdorff}
+} 
+
+\usepackage{chngcntr}
+\renewcommand{\thesection}{\Roman{section}}
+\counterwithout{subsection}{section}
+
+% listings
+
+\usepackage{listings, color}
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mygray}{rgb}{0.5,0.5,0.5}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+\definecolor{light-gray}{gray}{0.98}
+\definecolor{lighteccru}{HTML}{F6F4EE}
+\usepackage{courier}
+%%
+\lstset{ %
+  backgroundcolor=\color{lighteccru},   % choose the background color; you must add \usepackage{color} or \usepackage{xcolor}
+  basicstyle=\footnotesize\ttfamily,        % the size of the fonts that are used for the code
+  breaklines=true,                 % sets automatic line breaking
+  captionpos=b,                    % sets the caption-position to bottom
+  commentstyle=\color{mygreen},    % comment style
+  keywordstyle=\color{blue},       % keyword style
+  language={R},               	   % the language of the code
+  numbers=none,                    % where to put the line-numbers; possible values are (none, left, right)
+  numbersep=5pt,                   % how far the line-numbers are from the code
+  numberstyle=\tiny\color{mygray}, % the style that is used for the line-numbers
+  rulecolor=\color{black},         % if not set, the frame-color may be changed on line-breaks within not-black text (e.g. comments (green here))
+  showspaces=false,                % show spaces everywhere adding particular underscores; it overrides 'showstringspaces'
+  showstringspaces=false,          % underline spaces within strings only
+  showtabs=false,                  % show tabs within strings adding particular underscores                    % sets default tabsize to 2 spaces
+  title=\lstname,                   % show the filename of files included with \lstinputlisting; also try caption instead of title
+  belowskip=0em,
+  belowcaptionskip=0em 
+}
+
+\newcommand{\R}{\textsf{R}\ }
+
+% Font
+
+\usepackage{fontspec}
+\defaultfontfeatures{Mapping=tex-text}
+\setsansfont[Scale=MatchLowercase]{Helvetica Neue}
+%\setsansfont{LeMondeSans:style=Regular}
+\setmainfont[BoldFont = Garamond Premier Pro Semibold]{GaramondPremrPro-Med}
+
+\usepackage[math]{mathspec}
+\setmathfont(Digits,Latin,Greek){GaramondPremrPro-Med}
+%\setmathfont{Latin Modern Math}[version=lm]
+
+\renewcommand\ttdefault{lmtt}
+
+\linespread{1.1}         
+
+%\usepackage{tgadventor}     % this looks pretty awesome
+
+%\usepackage{sectsty}
+%\sectionfont{\fontsize{16}{15}\sffamily}
+%\subsectionfont{\fontsize{14}{15}\sffamily}
+
+
+\usepackage{enumitem}% http://ctan.org/pkg/enumitem
+\newtheorem{cslist}{Hypothesis}
+\renewcommand{\thecslist}{H\arabic{cslist}}%
+\newtheorem{thm}{Theorem}
+\newtheorem{claim}{Claim}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+
+%\doublespacing
+%\onehalfspacing
+%\singlespacing
+%\setlength{\parindent}{2ex}
+
+
+\usepackage{titling}
+\newcommand{\subtitle}[1]{%
+  \posttitle{%
+    \par\end{center}
+    \begin{center}\large#1\end{center}
+    \vskip0.5em}%
+}
+
+\title{Brief Introduction to \R}
+\author{Prepared by Anna Walsdorff \\ \href{mailto:anna.walsdorff@rochester.edu}{\texttt{anna.walsdorff@rochester.edu}}}
+\date{Updated: \today}
